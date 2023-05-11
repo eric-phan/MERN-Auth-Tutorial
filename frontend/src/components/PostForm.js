@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
+import addImage from "./AddImage";
+import axios from "axios";
 
 const PostForm = () => {
   const { dispatch } = usePostsContext();
@@ -15,24 +17,45 @@ const PostForm = () => {
   // the form will update the STATE of these input fields
 
   // handle image submission
-  const handleProductImageUpload = (e) => {
-    const file = e.target.files[0];
+  // const handleProductImageUpload = (e) => {
+  //   const file = e.target.files[0];
 
-    TransformFileData(file);
-  };
+  //   TransformFileData(file);
+  // };
 
-  const TransformFileData = (file) => {
-    const reader = new FileReader();
+  // const TransformFileData = (file) => {
+  //   const reader = new FileReader();
 
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setImage(reader.result);
+  //   if (file) {
+  //     reader.readAsDataURL(file);
+  //     reader.onloadend = () => {
+  //       setImage(reader.result);
+  //     };
+  //   } else {
+  //     setImage("");
+  //   }
+  // };
+  async function handleSubmit2(e) {
+    e.preventDefault();
+    try {
+      let imageUrl = "";
+      if (image) {
+        const formData = new FormData();
+        formData.append("file", image);
+        formData.append("upload_preset", "postsMERN");
+        const dataRes = await axios.post("yourUrl", formData);
+        imageUrl = dataRes.data.url;
+      }
+
+      const submitPost = {
+        image: imageUrl,
       };
-    } else {
-      setImage("");
+      console.log("success");
+      await axios.post("http://localhost:4000/store-image", submitPost);
+    } catch (err) {
+      err.response.data.msg && setError(err.response.data.msg);
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,12 +110,13 @@ const PostForm = () => {
 
       <label>Upload Image:</label>
       <input
-        id="imgUpload"
+        id="validationFormik107"
         accept="image/*"
         type="file"
-        onChange={handleProductImageUpload}
+        onChange={(e) => setImage(e.target.files[0])}
         required
       />
+
       {/* <input
         type="number"
         onChange={(e) => setImage(e.target.value)}
