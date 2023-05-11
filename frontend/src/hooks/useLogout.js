@@ -1,18 +1,20 @@
-import { useAuthContext } from './useAuthContext'
-import { useWorkoutsContext } from './useWorkoutsContext'
+import { useAuthContext } from "./useAuthContext";
+import { usePostsContext } from "./usePostsContext";
 
 export const useLogout = () => {
-  const { dispatch } = useAuthContext()
-  const { dispatch: dispatchWorkouts } = useWorkoutsContext()
+  const { dispatch } = useAuthContext();
+  const { dispatch: dispatchPosts } = usePostsContext();
 
   const logout = () => {
     // remove user from storage
-    localStorage.removeItem('user')
+    localStorage.removeItem("user");
 
     // dispatch logout action
-    dispatch({ type: 'LOGOUT' })
-    dispatchWorkouts({ type: 'SET_WORKOUTS', payload: null })
-  }
+    dispatch({ type: "LOGOUT" });
+    dispatchPosts({ type: "SET_POSTS", payload: null });
+    // dont need a payload to set to null
+  };
+  // when we logout we clear the global logout state with the null payload
 
-  return { logout }
-}
+  return { logout };
+};

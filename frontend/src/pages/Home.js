@@ -1,42 +1,45 @@
-import { useEffect }from 'react'
-import { useWorkoutsContext } from "../hooks/useWorkoutsContext"
-import { useAuthContext } from "../hooks/useAuthContext"
+import { useEffect } from "react";
+import { usePostsContext } from "../hooks/usePostsContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 // components
-import WorkoutDetails from '../components/WorkoutDetails'
-import WorkoutForm from '../components/WorkoutForm'
+import WorkoutDetails from "../components/PostDetails";
+import WorkoutForm from "../components/PostForm";
+import PostDetails from "../components/PostDetails";
+import PostForm from "../components/PostForm";
 
 const Home = () => {
-  const {workouts, dispatch} = useWorkoutsContext()
-  const {user} = useAuthContext()
+  const { posts, dispatch } = usePostsContext();
+  const { user } = useAuthContext();
 
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      const response = await fetch('/api/workouts', {
-        headers: {'Authorization': `Bearer ${user.token}`},
-      })
-      const json = await response.json()
+    const fetchPosts = async () => {
+      const response = await fetch("/api/posts", {
+        // perform this when it first loads
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      const json = await response.json();
 
       if (response.ok) {
-        dispatch({type: 'SET_WORKOUTS', payload: json})
+        dispatch({ type: "SET_POSTS", payload: json });
+        // will then fire the dispatch function, will use the postsreducer with action as payload
       }
-    }
+    };
 
     if (user) {
-      fetchWorkouts()
+      fetchPosts();
     }
-  }, [dispatch, user])
+  }, [dispatch, user]);
 
   return (
     <div className="home">
-      <div className="workouts">
-        {workouts && workouts.map((workout) => (
-          <WorkoutDetails key={workout._id} workout={workout} />
-        ))}
+      <div className="posts">
+        {posts &&
+          posts.map((post) => <PostDetails key={post._id} post={post} />)}
       </div>
-      <WorkoutForm />
+      <PostForm />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

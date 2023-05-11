@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { useAuthContext } from './useAuthContext'
+// update the authcontext with the users email which is default null
 
 export const useSignup = () => {
   const [error, setError] = useState(null)
+  // null to begin with is the inital state
   const [isLoading, setIsLoading] = useState(null)
+  // will be true when start the request
   const { dispatch } = useAuthContext()
 
   const signup = async (email, password) => {
@@ -11,11 +14,13 @@ export const useSignup = () => {
     setError(null)
 
     const response = await fetch('/api/user/signup', {
+      // proxy to localhost4000
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ email, password })
     })
     const json = await response.json()
+    // async method that we get back response
 
     if (!response.ok) {
       setIsLoading(false)
@@ -24,9 +29,11 @@ export const useSignup = () => {
     if (response.ok) {
       // save the user to local storage
       localStorage.setItem('user', JSON.stringify(json))
+      // have to store strings inside local storage
 
       // update the auth context
       dispatch({type: 'LOGIN', payload: json})
+      // fires the LOGIN case from AuthContext.js
 
       // update loading state
       setIsLoading(false)
