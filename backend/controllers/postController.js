@@ -63,44 +63,63 @@ const createPost = async (req, res) => {
   }
 
   // add doc to db
-  // try {
-  //   const user_id = req.user._id;
-  //   const post = await Post.create({
-  //     title,
-  //     image,
-  //     reps,
-  //     caption,
-  //     user_id,
-  //   });
-  //   console.log(post);
-  //   // adding the user_id to the document
-  //   res.status(200).json(post);
-  // } catch (error) {
-  //   res.status(400).json({ error: error.message });
-  // }
   try {
-    if (image) {
-      const uploadedResponse = await cloudinary.uploader.upload(image, {
-        upload_preset: "postsMERN",
-      });
-      if (uploadedResponse) {
-        const user_id = req.user._id;
-        const post = await Post.create({
-          title,
-          image,
-          reps,
-          caption,
-          user_id,
-        });
-        console.log(post);
-        // adding the user_id to the document
-        res.status(200).json(post);
-        const savedPost = await post.save();
-        res.status(200).send(savedPost);
-      }
-    }
+    const user_id = req.user._id;
+    const post = await Post.create({
+      title,
+      image,
+      reps,
+      caption,
+      user_id,
+    });
+    console.log(post);
+    // adding the user_id to the document
+    res.status(200).json(post);
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+//   try {
+//     if (image) {
+//       const uploadedResponse = await cloudinary.uploader.upload(image, {
+//         upload_preset: "postsMERN",
+//       });
+//       if (uploadedResponse) {
+//         const user_id = req.user._id;
+//         const post = await Post.create({
+//           title,
+//           image,
+//           reps,
+//           caption,
+//           user_id,
+//         });
+//         console.log(post);
+//         // adding the user_id to the document
+//         res.status(200).json(post);
+//         const savedPost = await post.save();
+//         res.status(200).send(savedPost);
+//       }
+//     }
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+
+// store image
+
+const storeImage = async (req, res) => {
+  try {
+    const { image } = req.body;
+    if (!image) {
+      return res.status(400).json({ msg: "Please enter an icon url" });
+    }
+    let newImage = new Image({
+      image,
+    });
+    newImage = await newImage.save();
+    res.json(newImage);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -150,4 +169,5 @@ module.exports = {
   deletePost,
   updatePost,
   getFeedPosts,
+  storeImage,
 };

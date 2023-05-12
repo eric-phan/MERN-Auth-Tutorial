@@ -6,6 +6,7 @@ const {
   getFeedPosts,
   deletePost,
   updatePost,
+  storeImage,
 } = require("../controllers/postController");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -25,6 +26,9 @@ router.get("/feed", getFeedPosts);
 
 // POST a new post
 router.post("/", createPost);
+
+// POST storeimage
+router.post("/store-image", storeImage);
 
 // DELETE a post
 router.delete("/:id", deletePost);
