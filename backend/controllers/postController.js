@@ -1,3 +1,4 @@
+const cloudinary = require("../middleware/cloudinary");
 const Post = require("../models/postModel");
 const mongoose = require("mongoose");
 
@@ -14,7 +15,9 @@ const getPosts = async (req, res) => {
 // get feed posts
 const getFeedPosts = async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: "desc" }).lean();
+    const posts = await Post.find({}).sort({ createdAt: "desc" }).lean();
+    // console.log("post");
+    // console.log(posts);
     res.status(200).json(posts);
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -24,7 +27,7 @@ const getFeedPosts = async (req, res) => {
 // get a single post
 const getPost = async (req, res) => {
   const { id } = req.params;
-
+  console.log(id);
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such post" });
   }
@@ -41,7 +44,6 @@ const getPost = async (req, res) => {
 // create new post
 const createPost = async (req, res) => {
   const { title, image, reps, caption } = req.body;
-  console.log(caption);
   let emptyFields = [];
 
   if (!title) {
@@ -63,46 +65,73 @@ const createPost = async (req, res) => {
   }
 
   // add doc to db
-  // try {
-  //   const user_id = req.user._id;
-  //   const post = await Post.create({
-  //     title,
-  //     image,
-  //     reps,
-  //     caption,
-  //     user_id,
-  //   });
-  //   console.log(post);
-  //   // adding the user_id to the document
-  //   res.status(200).json(post);
-  // } catch (error) {
-  //   res.status(400).json({ error: error.message });
-  // }
   try {
-    if (image) {
-      const uploadedResponse = await cloudinary.uploader.upload(image, {
-        upload_preset: "postsMERN",
-      });
-      if (uploadedResponse) {
-        const user_id = req.user._id;
-        const post = await Post.create({
-          title,
-          image,
-          reps,
-          caption,
-          user_id,
-        });
-        console.log(post);
-        // adding the user_id to the document
-        res.status(200).json(post);
-        const savedPost = await post.save();
-        res.status(200).send(savedPost);
-      }
-    }
+    const user_id = req.user._id;
+    // upload img
+    console.log(user.body);
+    const fileStr = req.body.data;
+    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+      upload_preset: "postsMERN",
+    });
+    const post = await Post.create({
+      title,
+      image: fileStr.secure_url,
+      reps,
+      caption,
+      user_id,
+    });
+    console.log(uploadResponse);
+    console.log(post);
+    // adding the user_id to the document
+    res.status(200).json(post);
+    res.json({ msg: "Uploaded!" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
+const uploadImg = async (req, res) => {
+  try {
+    const fileStr = req.body.data;
+    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+      upload_preset: "postsMERN",
+    });
+    console.log(uploadResponse);
+
+    // what we get back frm cloudinary
+    console.log(fileStr);
+    res.json({ msg: "Uploaded!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: "Something went wrong" });
+  }
+};
+// try {
+//   if (image) {
+//     const uploadedResponse = await cloudinary.uploader.upload(image, {
+//       upload_preset: "postsMERN",
+//     });
+//     if (uploadedResponse) {
+//       const user_id = req.user._id;
+//       const post = await Post.create({
+//         title,
+//         image,
+//         reps,
+//         caption,
+//         user_id,
+//       });
+//       console.log(post);
+//       // adding the user_id to the document
+//       res.status(200).json(post);
+//       const savedPost = await post.save();
+//       res.status(200).send(savedPost);
+//     }
+//   }
+// }
+// catch (error) {
+//   res.status(400).json({ error: error.message });
+//   }
+// };
 
 // delete a post
 const deletePost = async (req, res) => {
@@ -150,4 +179,5 @@ module.exports = {
   deletePost,
   updatePost,
   getFeedPosts,
+  uploadImg,
 };

@@ -11,11 +11,11 @@ const Post = () => {
   const { id } = useParams();
   const { posts, dispatch } = usePostsContext();
   const { user } = useAuthContext();
-
+console.log(id)
   useEffect(() => {
     const fetchPost = async () => {
-      const response = await fetch(`/api/posts/${id}`, {
-        // headers: {'Authorization': `Bearer ${user.token}`},
+      const response = await fetch(`/api/posts/${id.substring(1)}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
       });
       const json = await response.json();
 

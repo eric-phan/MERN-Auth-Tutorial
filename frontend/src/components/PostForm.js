@@ -1,61 +1,69 @@
 import { useState } from "react";
 import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-import addImage from "./AddImage";
-import axios from "axios";
+import Upload from "./Upload";
+import Alert from "./Alert";
 
 const PostForm = () => {
   const { dispatch } = usePostsContext();
   const { user } = useAuthContext();
-
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [caption, setCaption] = useState("");
   const [reps, setReps] = useState("");
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-  // the form will update the STATE of these input fields
+  // upload portion
+  const [fileInputState, setFileInputState] = useState("");
+  const [previewSource, setPreviewSource] = useState("");
+  const [selectedFile, setSelectedFile] = useState();
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    previewFile(file);
+    setSelectedFile(file);
+    setFileInputState(e.target.value);
+  };
+  const previewFile = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreviewSource(reader.result);
+    };
+  };
 
-  // handle image submission
-  // const handleProductImageUpload = (e) => {
-  //   const file = e.target.files[0];
-
-  //   TransformFileData(file);
-  // };
-
-  // const TransformFileData = (file) => {
-  //   const reader = new FileReader();
-
-  //   if (file) {
-  //     reader.readAsDataURL(file);
-  //     reader.onloadend = () => {
-  //       setImage(reader.result);
-  //     };
-  //   } else {
-  //     setImage("");
-  //   }
-  // };
-  async function handleSubmit2(e) {
+  const handleSubmitFile = (e) => {
     e.preventDefault();
+    if (!selectedFile) return;
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onloadend = () => {
+      uploadImage(reader.result);
+    };
+    reader.onerror = () => {
+      console.error("AHHHHHHHH!!");
+      setErrMsg("something went wrong!");
+    };
+  };
+  const uploadImage = async (base64EncodedImage) => {
     try {
-      let imageUrl = "";
-      if (image) {
-        const formData = new FormData();
-        formData.append("file", image);
-        formData.append("upload_preset", "postsMERN");
-        const dataRes = await axios.post("yourUrl", formData);
-        imageUrl = dataRes.data.url;
-      }
-
-      const submitPost = {
-        image: imageUrl,
-      };
-      console.log("success");
-      await axios.post("http://localhost:4000/store-image", submitPost);
+      await fetch("/api/posts", {
+        method: "POST",
+        body: JSON.stringify({ data: base64EncodedImage }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      setFileInputState("");
+      setPreviewSource("");
+      setSuccessMsg("Image uploaded successfully");
     } catch (err) {
-      err.response.data.msg && setError(err.response.data.msg);
+      console.error(err);
+      setErrMsg("Something went wrong!");
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,7 +105,7 @@ const PostForm = () => {
   };
 
   return (
-    <form className="create" onSubmit={handleSubmit}>
+    <form className="create" onSubmit={handleSubmit && handleSubmitFile}>
       <h3>Add a New Post</h3>
 
       <label>Excersize Title:</label>
@@ -109,20 +117,25 @@ const PostForm = () => {
       />
 
       <label>Upload Image:</label>
+      <Alert msg={errMsg} type="danger" />
+      <Alert msg={successMsg} type="success" />
       <input
-        id="validationFormik107"
-        accept="image/*"
+        id="fileInput"
         type="file"
-        onChange={(e) => setImage(e.target.files[0])}
-        required
+        name="image"
+        onChange={handleFileInputChange}
+        value={fileInputState}
+        className="form-input"
       />
-
-      {/* <input
-        type="number"
+      {previewSource && (
+        <img src={previewSource} alt="chosen" style={{ height: "300px" }} />
+      )}
+      <input
+        type="string"
         onChange={(e) => setImage(e.target.value)}
         value={image}
         className={emptyFields.includes("image") ? "error" : ""}
-      /> */}
+      />
 
       <label>Reps:</label>
       <input

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 // date fns
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
-const FeedDetails = ({ post }) => {
+const FeedDetailsTest = ({ post }) => {
   const { dispatch } = usePostsContext();
   const { user } = useAuthContext();
 
@@ -52,7 +52,7 @@ const FeedDetails = ({ post }) => {
         <h4>{post.title}</h4>
         <p>
           <strong>Load (kg): </strong>
-          {post.load}
+          {post.image}
         </p>
         <p>
           <strong>Reps: </strong>
@@ -76,4 +76,4 @@ const FeedDetails = ({ post }) => {
   );
 };
 
-export default FeedDetails;
+export default FeedDetailsTest;

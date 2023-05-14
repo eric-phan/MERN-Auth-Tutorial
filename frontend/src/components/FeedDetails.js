@@ -51,9 +51,9 @@ const FeedDetails = ({ post }) => {
           })}
         </p>
       </Link>
-      {/* <span className="material-symbols-outlined" onClick={handleClick}>
+      <span className="material-symbols-outlined" onClick={handleClick}>
         delete
-      </span> */}
+      </span>
       {/* leave open the delete button to delete and not link to post */}
     </div>
   );
