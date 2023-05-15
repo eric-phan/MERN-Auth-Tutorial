@@ -8,7 +8,7 @@ const PostForm = () => {
   const { dispatch } = usePostsContext();
   const { user } = useAuthContext();
   const [title, setTitle] = useState("");
-  const [image, setImage] = useState("");
+  // const [image, setImage] = useState("");
   const [caption, setCaption] = useState("");
   const [reps, setReps] = useState("");
   const [error, setError] = useState(null);
@@ -75,7 +75,7 @@ const PostForm = () => {
       return;
     }
 
-    const post = { title, image, reps, caption };
+    const post = { title, reps, caption };
     console.log(post);
 
     const response = await fetch("https://api.cloudinary.com/v1_1/dwm8b7nkp", {
@@ -95,7 +95,7 @@ const PostForm = () => {
     }
     if (response.ok) {
       setTitle("");
-      setImage("");
+      // setImage("");
       setReps("");
       setCaption("");
       setError(null);
@@ -130,12 +130,12 @@ const PostForm = () => {
       {previewSource && (
         <img src={previewSource} alt="chosen" style={{ height: "300px" }} />
       )}
-      <input
+      {/* <input
         type="string"
         onChange={(e) => setImage(e.target.value)}
         value={image}
         className={emptyFields.includes("image") ? "error" : ""}
-      />
+      /> */}
 
       <label>Reps:</label>
       <input

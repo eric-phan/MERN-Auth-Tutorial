@@ -43,15 +43,15 @@ const getPost = async (req, res) => {
 
 // create new post
 const createPost = async (req, res) => {
-  const { title, image, reps, caption } = req.body;
+  const { title, reps, caption } = req.body;
   let emptyFields = [];
 
   if (!title) {
     emptyFields.push("title");
   }
-  if (!image) {
-    emptyFields.push("image");
-  }
+  // if (!image) {
+  //   emptyFields.push("image");
+  // }
   if (!reps) {
     emptyFields.push("reps");
   }
@@ -75,7 +75,7 @@ const createPost = async (req, res) => {
     });
     const post = await Post.create({
       title,
-      image: fileStr.secure_url,
+      image: uploadResponse.secure_url,
       reps,
       caption,
       user_id,
@@ -99,7 +99,7 @@ const uploadImg = async (req, res) => {
     console.log(uploadResponse);
 
     // what we get back frm cloudinary
-    console.log(fileStr);
+    console.log(uploadResponse.secure_url);
     res.json({ msg: "Uploaded!" });
   } catch (err) {
     console.error(err);
