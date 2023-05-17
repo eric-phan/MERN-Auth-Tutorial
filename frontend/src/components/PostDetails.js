@@ -42,6 +42,10 @@ const PostDetails = ({ post }) => {
           {post.reps}
         </p>
         <p>
+
+          {post.reps}
+        </p>
+        <p>
           <strong>Caption: </strong>
           {post.caption}
         </p>

@@ -7,6 +7,7 @@ import WorkoutDetails from "../components/PostDetails";
 import WorkoutForm from "../components/PostForm";
 import PostDetails from "../components/PostDetails";
 import PostForm from "../components/PostForm";
+import PostFormOG from "../components/PostFormOG";
 
 const Home = () => {
   const { posts, dispatch } = usePostsContext();
@@ -37,7 +38,7 @@ const Home = () => {
         {posts &&
           posts.map((post) => <PostDetails key={post._id} post={post} />)}
       </div>
-      <PostForm />
+      <PostForm/>
     </div>
   );
 };

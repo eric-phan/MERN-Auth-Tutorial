@@ -42,16 +42,68 @@ const getPost = async (req, res) => {
 };
 
 // create new post
-const createPost = async (req, res) => {
-  const { title, reps, caption } = req.body;
-  let emptyFields = [];
+// const createPost = async (req, res) => {
+//   const { title, image, reps, caption } = req.body;
+//   let emptyFields = [];
 
+//   if (!title) {
+//     emptyFields.push("title");
+//   }
+//   // if (!image) {
+//   //   emptyFields.push("image");
+//   // }
+//   if (!reps) {
+//     emptyFields.push("reps");
+//   }
+//   if (!caption) {
+//     emptyFields.push("caption");
+//   }
+//   if (emptyFields.length > 0) {
+//     return res
+//       .status(400)
+//       .json({ error: "Please fill in all the fields", emptyFields });
+//   }
+
+//   // add doc to db
+//   try {
+//     const user_id = req.user._id;
+//     // upload img
+//     // console.log(user.body);
+//     console.log(req.body);
+//     const fileStr = req.body.data;
+//     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+//       upload_preset: "postsMERN",
+//     });
+//     const post = await Post.create({
+//       title,
+//       image: uploadResponse.secure_url,
+//       reps,
+//       caption,
+//       user_id,
+//     });
+//     // console.log(uploadResponse);
+//     // console.log(post);
+//     // console.log(req.body);
+//     // adding the user_id to the document
+//     res.status(200).json(post);
+//     res.json({ msg: "Uploaded!" });
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+// ...
+
+// create new post
+const createPost = async (req, res) => {
+  const { title, image, reps, caption } = req.body;
+  let emptyFields = [];
+  console.log(req.body);
   if (!title) {
     emptyFields.push("title");
   }
-  // if (!image) {
-  //   emptyFields.push("image");
-  // }
+  if (!image) {
+    emptyFields.push("image");
+  }
   if (!reps) {
     emptyFields.push("reps");
   }
@@ -63,13 +115,16 @@ const createPost = async (req, res) => {
       .status(400)
       .json({ error: "Please fill in all the fields", emptyFields });
   }
-
+  console.log("createPost");
+  console.log(req.body);
   // add doc to db
   try {
     const user_id = req.user._id;
     // upload img
-    console.log(user.body);
-    const fileStr = req.body.data;
+    // console.log(user.body);
+    console.log(req.body);
+    console.log(user_id);
+    const fileStr = req.body.image;
     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
       upload_preset: "postsMERN",
     });
@@ -80,11 +135,12 @@ const createPost = async (req, res) => {
       caption,
       user_id,
     });
-    console.log(uploadResponse);
-    console.log(post);
+    // console.log(uploadResponse);
+    // console.log(post);
+    // console.log(req.body);
     // adding the user_id to the document
-    res.status(200).json(post);
-    res.json({ msg: "Uploaded!" });
+    res.status(200).json({ post, msg: "Uploaded!" });
+    console.log(post);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -96,10 +152,10 @@ const uploadImg = async (req, res) => {
     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
       upload_preset: "postsMERN",
     });
-    console.log(uploadResponse);
+    // console.log(uploadResponse);
 
     // what we get back frm cloudinary
-    console.log(uploadResponse.secure_url);
+    // console.log(uploadResponse.secure_url);
     res.json({ msg: "Uploaded!" });
   } catch (err) {
     console.error(err);

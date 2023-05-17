@@ -3,15 +3,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const postRoutes = require("./routes/posts");
 const userRoutes = require("./routes/user");
+const bodyParser = require("body-parser");
 var cors = require("cors");
 
 // express app
 const app = express();
 
 // middleware
-// app.use(express.json());
+app.use(express.json());
 app.use(express.json({ limit: "50mb" }));
 // up limit to upload larger images
+
+app.use(bodyParser.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
 
