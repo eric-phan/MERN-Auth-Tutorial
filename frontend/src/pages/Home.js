@@ -9,6 +9,7 @@ import PostDetails from "../components/PostDetails";
 import PostForm from "../components/PostForm";
 import PostFormOG from "../components/PostFormOG";
 
+
 const Home = () => {
   const { posts, dispatch } = usePostsContext();
   const { user } = useAuthContext();
@@ -31,7 +32,7 @@ const Home = () => {
       fetchPosts();
     }
   }, [dispatch, user]);
-
+console.log(posts)
   return (
     <div className="home">
       <div className="posts">

@@ -14,7 +14,7 @@ const PostDetails = ({ post }) => {
     if (!user) {
       return;
     }
-
+    console.log(post);
     const response = await fetch("/api/posts/" + post._id, {
       method: "DELETE",
       headers: {
@@ -42,18 +42,19 @@ const PostDetails = ({ post }) => {
           {post.reps}
         </p>
         <p>
-
-          {post.reps}
-        </p>
-        <p>
           <strong>Caption: </strong>
           {post.caption}
         </p>
-        <p>
-          {formatDistanceToNow(new Date(post.createdAt), {
-            addSuffix: true,
-          })}
-        </p>
+        {/* {post &&
+          post.map((p) => <img  src={p.image}  />)}
+         */}
+
+        <div>
+          {/* image */}
+          {<img src={post.image} alt="Post Image" />}
+        </div>
+
+        <p>{post.createdAt}</p>
       </Link>
       <span className="material-symbols-outlined" onClick={handleClick}>
         delete

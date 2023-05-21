@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import Alert from "./Alert";
+import { useNavigate } from "react-router-dom";
 
 const PostForm = () => {
   // this state tracks the base64 encoded Image
@@ -19,7 +20,7 @@ const PostForm = () => {
   const [previewSource, setPreviewSource] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [errMsg, setErrMsg] = useState("");
-
+  let navigate = useNavigate();
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     setPreviewSource(URL.createObjectURL(file));
@@ -67,6 +68,7 @@ const PostForm = () => {
         setEmptyFields([]);
         setSuccessMsg("Post created successfully");
         dispatch({ type: "CREATE_POST", payload: json });
+        navigate("/");
       }
     } catch (err) {
       console.error(err);
@@ -117,7 +119,7 @@ const PostForm = () => {
       <input
         type="text"
         onChange={(e) => setCaption(e.target.value)}
-        //  Need to call state update function because there is no automatic binding like with the file input field. 
+        //  Need to call state update function because there is no automatic binding like with the file input field.
         value={caption}
         className={emptyFields.includes("caption") ? "error" : ""}
       />
