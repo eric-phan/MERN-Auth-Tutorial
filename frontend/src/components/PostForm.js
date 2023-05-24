@@ -1,37 +1,25 @@
 import React, { useState } from "react";
 import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
 
 const PostForm = () => {
-  // this state tracks the base64 encoded Image
-  const [base64Image, setBase64Image] = useState("");
   const { dispatch } = usePostsContext();
   const { user } = useAuthContext();
   const [title, setTitle] = useState("");
-  // const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [caption, setCaption] = useState("");
   const [reps, setReps] = useState("");
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
-  // upload portion
-  const [fileInputState, setFileInputState] = useState("");
-  const [previewSource, setPreviewSource] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errMsg, setErrMsg] = useState("");
   let navigate = useNavigate();
+
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
-    setPreviewSource(URL.createObjectURL(file));
-    // converts the selected file to base64
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setBase64Image(reader.result);
-      // update the base64 image state
-    };
+    setImage(file);
   };
+  // By using e.target.files[0], you're accessing the first file from the files array, assuming it's a single file upload.
+  // Storing it in the file variable allows you to use it later when submitting the form or performing other operations.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,22 +28,22 @@ const PostForm = () => {
       setError("You must be logged in");
       return;
     }
-
-    const post = { title, reps, caption, image: base64Image };
-    // includes the base64Image in the post data
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("reps", reps);
+    formData.append("caption", caption);
+    formData.append("image", image); // image is the file object, it is being appended to formdata here
 
     try {
       const response = await fetch("/api/posts", {
         method: "POST",
-        body: JSON.stringify(post),
+        body: formData,
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       });
 
       const json = await response.json();
-      console.log(json);
 
       if (!response.ok) {
         setError(json.error);
@@ -66,13 +54,12 @@ const PostForm = () => {
         setCaption("");
         setError(null);
         setEmptyFields([]);
-        setSuccessMsg("Post created successfully");
         dispatch({ type: "CREATE_POST", payload: json });
         navigate("/");
       }
     } catch (err) {
       console.error(err);
-      setErrMsg("Something went wrong!");
+      setError("Something went wrong!");
     }
   };
 
@@ -80,7 +67,7 @@ const PostForm = () => {
     <form className="create" onSubmit={handleSubmit}>
       <h3>Add a New Post</h3>
 
-      <label>Exercise Title:</label>
+      <label>Title:</label>
       <input
         type="text"
         onChange={(e) => setTitle(e.target.value)}
@@ -89,23 +76,14 @@ const PostForm = () => {
       />
 
       <label>Upload Image:</label>
-      <Alert msg={errMsg} type="danger" />
-      <Alert msg={successMsg} type="success" />
       <input
         id="fileInput"
         type="file"
         name="image"
         onChange={handleFileInputChange}
-        // change to base64
-        value={fileInputState}
-        // The reason you don't need to call setFileInputState explicitly is that the value prop of the file input field
-        // is already bound to fileInputState. So when the value of fileInputState changes indirectly through the handleFileInputChange function,
-        // it automatically updates the value of the file input field in the UI.
+        // trigger the image state saving fx above
         className="form-input"
       />
-      {previewSource && (
-        <img src={previewSource} alt="chosen" style={{ height: "300px" }} />
-      )}
 
       <label>Reps:</label>
       <input
@@ -119,7 +97,6 @@ const PostForm = () => {
       <input
         type="text"
         onChange={(e) => setCaption(e.target.value)}
-        //  Need to call state update function because there is no automatic binding like with the file input field.
         value={caption}
         className={emptyFields.includes("caption") ? "error" : ""}
       />

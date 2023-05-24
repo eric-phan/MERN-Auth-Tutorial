@@ -18,7 +18,7 @@ const Feed = () => {
       });
 
       const json = await response.json();
-      console.log(json);
+
       if (response.ok) {
         dispatch({ type: "SET_POSTS", payload: json });
       }
@@ -28,11 +28,14 @@ const Feed = () => {
     fetchPostsFeed();
     // }
   }, [dispatch]);
+  // console.log(posts); // Log the posts array to see its contents
 
   return (
     <div className="feed">
       <div className="posts">
-        {posts && posts.map((post) => <FeedDetails key={post} post={post} />)}
+        {posts &&
+          posts.map((post) => <FeedDetails key={post._id} post={post} />)}
+        {/* give it a unique key */}
       </div>
       <PostForm />
     </div>

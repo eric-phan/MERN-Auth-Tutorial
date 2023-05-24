@@ -14,7 +14,7 @@ const PostDetails = ({ post }) => {
     if (!user) {
       return;
     }
-    console.log(post);
+    // console.log(post);
     const response = await fetch("/api/posts/" + post._id, {
       method: "DELETE",
       headers: {
@@ -33,10 +33,11 @@ const PostDetails = ({ post }) => {
       <Link to={`/post/:${post._id}`}>
         {/* link to get individual post */}
         <h4>{post.title}</h4>
-        <p>
-          <strong>Load (kg): </strong>
-          {post.load}
-        </p>
+
+        <div>
+          {/* image */}
+          {<img src={post.image} alt="Post Image" />}
+        </div>
         <p>
           <strong>Reps: </strong>
           {post.reps}
@@ -45,14 +46,6 @@ const PostDetails = ({ post }) => {
           <strong>Caption: </strong>
           {post.caption}
         </p>
-        {/* {post &&
-          post.map((p) => <img  src={p.image}  />)}
-         */}
-
-        <div>
-          {/* image */}
-          {<img src={post.image} alt="Post Image" />}
-        </div>
 
         <p>{post.createdAt}</p>
       </Link>

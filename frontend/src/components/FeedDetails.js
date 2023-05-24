@@ -33,10 +33,11 @@ const FeedDetails = ({ post }) => {
       <Link to={`/post/:${post._id}`}>
         {/* link to get individual post */}
         <h4>{post.title}</h4>
-        <p>
-          <strong>Load (kg): </strong>
-          {post.load}
-        </p>
+
+        <div>
+          {/* image */}
+          {<img src={post.image} alt="Post Image" />}
+        </div>
         <p>
           <strong>Reps: </strong>
           {post.reps}

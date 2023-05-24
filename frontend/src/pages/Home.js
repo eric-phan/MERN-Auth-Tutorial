@@ -3,12 +3,10 @@ import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 
 // components
-import WorkoutDetails from "../components/PostDetails";
-import WorkoutForm from "../components/PostForm";
+
 import PostDetails from "../components/PostDetails";
 import PostForm from "../components/PostForm";
 import PostFormOG from "../components/PostFormOG";
-
 
 const Home = () => {
   const { posts, dispatch } = usePostsContext();
@@ -32,14 +30,14 @@ const Home = () => {
       fetchPosts();
     }
   }, [dispatch, user]);
-console.log(posts)
+
   return (
     <div className="home">
       <div className="posts">
         {posts &&
           posts.map((post) => <PostDetails key={post._id} post={post} />)}
       </div>
-      <PostForm/>
+      <PostForm />
     </div>
   );
 };

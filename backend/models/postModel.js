@@ -8,12 +8,16 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
-    reps: {
-      type: Number,
-      required: true,
-    },
     image: {
       type: String,
+      required: true,
+    },
+    cloudinaryId: {
+      type: String,
+      require: true,
+    },
+    reps: {
+      type: Number,
       required: true,
     },
     caption: {

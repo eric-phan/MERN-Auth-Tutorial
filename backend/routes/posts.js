@@ -6,9 +6,12 @@ const {
   getFeedPosts,
   deletePost,
   updatePost,
-  uploadImg,
 } = require("../controllers/postController");
 const requireAuth = require("../middleware/requireAuth");
+const multer = require("multer");
+const upload = multer({
+  dest: "uploads/", // specify the destination directory for storing uploaded files
+});
 
 const router = express.Router();
 
@@ -27,10 +30,11 @@ router.get("/:id", getPost);
 // if this is before it will treat everything below it as a parameter
 
 // POST a new post
-router.post("/", createPost);
+// router.post("/", createPost);
+router.post("/", upload.single("image"), createPost);
 
 // upload an image
-router.post("/upload", uploadImg);
+// router.post("/upload", uploadImg);
 
 // DELETE a post
 router.delete("/:id", deletePost);
