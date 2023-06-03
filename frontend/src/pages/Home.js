@@ -3,7 +3,6 @@ import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 
 // components
-
 import PostDetails from "../components/PostDetails";
 import PostForm from "../components/PostForm";
 import PostFormOG from "../components/PostFormOG";
@@ -15,14 +14,12 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch("/api/posts", {
-        // perform this when it first loads
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const json = await response.json();
 
       if (response.ok) {
         dispatch({ type: "SET_POSTS", payload: json });
-        // will then fire the dispatch function, will use the postsreducer with action as payload
       }
     };
 
@@ -35,7 +32,9 @@ const Home = () => {
     <div className="home">
       <div className="posts">
         {posts &&
-          posts.map((post) => <PostDetails key={post._id} post={post} />)}
+          posts.map((post) =>
+            post ? <PostDetails key={post._id} post={post} /> : null
+          )}
       </div>
       <PostForm />
     </div>

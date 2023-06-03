@@ -43,58 +43,6 @@ const getPost = async (req, res) => {
 };
 
 // create new post
-// const createPost = async (req, res) => {
-//   const { title, image, reps, caption } = req.body;
-//   let emptyFields = [];
-
-//   if (!title) {
-//     emptyFields.push("title");
-//   }
-//   // if (!image) {
-//   //   emptyFields.push("image");
-//   // }
-//   if (!reps) {
-//     emptyFields.push("reps");
-//   }
-//   if (!caption) {
-//     emptyFields.push("caption");
-//   }
-//   if (emptyFields.length > 0) {
-//     return res
-//       .status(400)
-//       .json({ error: "Please fill in all the fields", emptyFields });
-//   }
-
-//   // add doc to db
-//   try {
-//     const user_id = req.user._id;
-//     // upload img
-//     // console.log(user.body);
-//     console.log(req.body);
-//     const fileStr = req.body.data;
-//     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
-//       upload_preset: "postsMERN",
-//     });
-//     const post = await Post.create({
-//       title,
-//       image: uploadResponse.secure_url,
-//       reps,
-//       caption,
-//       user_id,
-//     });
-//     // console.log(uploadResponse);
-//     // console.log(post);
-//     // console.log(req.body);
-//     // adding the user_id to the document
-//     res.status(200).json(post);
-//     res.json({ msg: "Uploaded!" });
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// };
-// ...
-
-// create new post
 const createPost = async (req, res) => {
   const { title, reps, caption } = req.body;
   const image = req.file; // Use req.file instead of req.body.image
@@ -154,23 +102,9 @@ const deletePost = async (req, res) => {
   }
 };
 
-// const deletePost = async (req, res) => {
-//   const { id } = req.params;
-//   let post = await Post.findById({ _id: id });
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     return res.status(404).json({ error: "No such post" });
-//   }
-//   await cloudinary.uploader.destroy(post.cloudinaryId);
-//   await Post.findOneAndDelete({ _id: id });
-
-//   if (!post) {
-//     return res.status(400).json({ error: "No such post" });
-//   }
-
-//   res.status(200).json(post);
-// };
-
 // update a post
+
+
 const updatePost = async (req, res) => {
   const { id } = req.params;
 
@@ -178,18 +112,22 @@ const updatePost = async (req, res) => {
     return res.status(404).json({ error: "No such post" });
   }
 
-  const post = await Post.findOneAndUpdate(
-    { _id: id },
-    {
-      ...req.body,
+  try {
+    const post = await Post.findOneAndUpdate(
+      { _id: id },
+      { ...req.body },
+      { new: true } // This option returns the updated post instead of the original one
+    );
+
+    if (!post) {
+      return res.status(400).json({ error: "No such post" });
     }
-  );
 
-  if (!post) {
-    return res.status(400).json({ error: "No such post" });
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
   }
-
-  res.status(200).json(post);
 };
 
 module.exports = {

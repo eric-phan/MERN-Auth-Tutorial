@@ -40,6 +40,6 @@ router.post("/", upload.single("image"), createPost);
 router.delete("/:id", deletePost);
 
 // UPDATE a post
-router.patch("/:id", updatePost);
+router.put("/:id", updatePost);
 
 module.exports = router;

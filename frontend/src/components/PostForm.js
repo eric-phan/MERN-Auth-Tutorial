@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useNavigate } from "react-router-dom";
+import { Text, Card, Button, TextInput } from "@mantine/core";
 
 const PostForm = () => {
   const { dispatch } = usePostsContext();
   const { user } = useAuthContext();
-  const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
-  const [caption, setCaption] = useState("");
+  const [title, setTitle] = useState("");
   const [reps, setReps] = useState("");
+  const [caption, setCaption] = useState("");
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
   let navigate = useNavigate();
@@ -18,8 +19,6 @@ const PostForm = () => {
     const file = e.target.files[0];
     setImage(file);
   };
-  // By using e.target.files[0], you're accessing the first file from the files array, assuming it's a single file upload.
-  // Storing it in the file variable allows you to use it later when submitting the form or performing other operations.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,11 +27,12 @@ const PostForm = () => {
       setError("You must be logged in");
       return;
     }
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("reps", reps);
     formData.append("caption", caption);
-    formData.append("image", image); // image is the file object, it is being appended to formdata here
+    formData.append("image", image);
 
     try {
       const response = await fetch("/api/posts", {
@@ -64,47 +64,47 @@ const PostForm = () => {
   };
 
   return (
-    <form className="create" onSubmit={handleSubmit}>
-      <h3>Add a New Post</h3>
+    <Card shadow="xs" padding="lg" style={{ height: "32rem" }}>
+      <form className="create" onSubmit={handleSubmit}>
+        <Text size="lg">Add a New Post</Text>
 
-      <label>Title:</label>
-      <input
-        type="text"
-        onChange={(e) => setTitle(e.target.value)}
-        value={title}
-        className={emptyFields.includes("title") ? "error" : ""}
-      />
+        <Text size="md">Title:</Text>
+        <TextInput
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          error={emptyFields.includes("title")}
+        />
 
-      <label>Upload Image:</label>
-      <input
-        id="fileInput"
-        type="file"
-        name="image"
-        onChange={handleFileInputChange}
-        // trigger the image state saving fx above
-        className="form-input"
-      />
+        <Text size="md">Upload Image:</Text>
+        <input
+          id="fileInput"
+          type="file"
+          name="image"
+          onChange={handleFileInputChange}
+          className="form-input"
+        />
 
-      <label>Reps:</label>
-      <input
-        type="number"
-        onChange={(e) => setReps(e.target.value)}
-        value={reps}
-        className={emptyFields.includes("reps") ? "error" : ""}
-      />
+        <Text size="md">Reps:</Text>
+        <TextInput
+          type="number"
+          value={reps}
+          onChange={(e) => setReps(e.target.value)}
+          error={emptyFields.includes("reps")}
+        />
 
-      <label>Caption:</label>
-      <input
-        type="text"
-        onChange={(e) => setCaption(e.target.value)}
-        value={caption}
-        className={emptyFields.includes("caption") ? "error" : ""}
-      />
+        <Text size="md">Caption:</Text>
+        <TextInput
+          type="text"
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          error={emptyFields.includes("caption")}
+        />
 
-      <button>Add post</button>
+        <Button type="submit">Add post</Button>
 
-      {error && <div className="error">{error}</div>}
-    </form>
+        {error && <div className="error">{error}</div>}
+      </form>
+    </Card>
   );
 };
 

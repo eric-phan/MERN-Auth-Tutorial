@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { Button, Container, Text } from "@mantine/core";
 
 const Navbar = () => {
   const { logout } = useLogout();

@@ -15,6 +15,18 @@ export const postsReducer = (state, action) => {
         posts: [action.payload, ...state.posts],
         // new array, action payload is a single workout, spread the previous state of array of wrokouts
       };
+    case "UPDATE_POST":
+      const updatedPosts = state.posts.map((post) => {
+        if (post._id === action.payload._id) {
+          return action.payload;
+        }
+        return post;
+      });
+      return {
+        ...state,
+        posts: updatedPosts,
+      };
+
     case "DELETE_POST":
       return {
         posts: state.posts.filter((w) => w._id !== action.payload._id),
