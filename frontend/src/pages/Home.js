@@ -5,7 +5,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 // components
 import PostDetails from "../components/PostDetails";
 import PostForm from "../components/PostForm";
-import PostFormOG from "../components/PostFormOG";
+import { Card } from "@mantine/core";
 
 const Home = () => {
   const { posts, dispatch } = usePostsContext();
@@ -29,15 +29,17 @@ const Home = () => {
   }, [dispatch, user]);
 
   return (
-    <div className="home">
-      <div className="posts">
-        {posts &&
-          posts.map((post) =>
-            post ? <PostDetails key={post._id} post={post} /> : null
-          )}
+    <Card className="home">
+      <div className="homeContainer">
+        <PostForm />
+        <div className="homePosts">
+          {posts &&
+            posts.map((post) =>
+              post ? <PostDetails key={post._id} post={post} /> : null
+            )}
+        </div>
       </div>
-      <PostForm />
-    </div>
+    </Card>
   );
 };
 

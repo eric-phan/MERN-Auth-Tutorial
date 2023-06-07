@@ -1,6 +1,8 @@
 import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Link } from "react-router-dom";
+import { Text, Input, Button, Card } from "@mantine/core";
+
 // allows you to be authorized when you delete, make a post, and at homepage
 
 // date fns
@@ -29,23 +31,28 @@ const FeedDetails = ({ post }) => {
   };
 
   return (
-    <div className="post-details">
-      <Link to={`/post/:${post._id}`}>
+    <Card className="post-details" shadow="xs">
+      <Link
+        to={`/post/:${post._id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
         {/* link to get individual post */}
-        <h4>{post.title}</h4>
+        <Text>
+          <h4>{post.title}</h4>
+        </Text>
 
         <div>
           {/* image */}
           {<img src={post.image} alt="Post Image" />}
         </div>
-        <p>
+        <Text>
           <strong>Reps: </strong>
           {post.reps}
-        </p>
-        <p>
+        </Text>
+        <Text>
           <strong>Caption: </strong>
           {post.caption}
-        </p>
+        </Text>
         <p>
           {formatDistanceToNow(new Date(post.createdAt), {
             addSuffix: true,
@@ -53,10 +60,10 @@ const FeedDetails = ({ post }) => {
         </p>
       </Link>
       <span className="material-symbols-outlined" onClick={handleClick}>
-        delete
+        Delete
       </span>
       {/* leave open the delete button to delete and not link to post */}
-    </div>
+    </Card>
   );
 };
 

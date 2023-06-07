@@ -2,7 +2,16 @@ import React, { useState } from "react";
 import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useNavigate } from "react-router-dom";
-import { Text, Card, Button, TextInput } from "@mantine/core";
+import {
+  Text,
+  Card,
+  Button,
+  FileInput,
+  Paper,
+  TextInput,
+  useMantineTheme,
+  MantineProvider,
+} from "@mantine/core";
 
 const PostForm = () => {
   const { dispatch } = usePostsContext();
@@ -14,6 +23,8 @@ const PostForm = () => {
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
   let navigate = useNavigate();
+
+  const theme = useMantineTheme();
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -64,29 +75,36 @@ const PostForm = () => {
   };
 
   return (
-    <Card shadow="xs" padding="lg" style={{ height: "32rem" }}>
+    <Card
+      shadow="xs"
+      padding="lg"
+      style={{ height: "32rem", marginTop: "1rem" }}
+      color={theme.colors.brand[1]}
+    >
       <form className="create" onSubmit={handleSubmit}>
         <Text size="lg">Add a New Post</Text>
 
         <Text size="md">Title:</Text>
         <TextInput
+          className="postFormInput"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           error={emptyFields.includes("title")}
         />
 
         <Text size="md">Upload Image:</Text>
-        <input
+        <FileInput
           id="fileInput"
-          type="file"
-          name="image"
+          placeholder="Pick file"
+          accept="image/*"
           onChange={handleFileInputChange}
-          className="form-input"
+          className="postFormInput"
         />
 
         <Text size="md">Reps:</Text>
         <TextInput
           type="number"
+          className="postFormInput"
           value={reps}
           onChange={(e) => setReps(e.target.value)}
           error={emptyFields.includes("reps")}
@@ -95,12 +113,15 @@ const PostForm = () => {
         <Text size="md">Caption:</Text>
         <TextInput
           type="text"
+          className="postFormInput"
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           error={emptyFields.includes("caption")}
         />
 
-        <Button type="submit">Add post</Button>
+        <Button type="submit">
+          Add post
+        </Button>
 
         {error && <div className="error">{error}</div>}
       </form>

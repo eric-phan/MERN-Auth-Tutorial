@@ -2,40 +2,10 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { usePostsContext } from "../hooks/usePostsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { Card, Container } from "@mantine/core";
 
 // components
 import PostDetails from "../components/PostDetails";
-
-// const Post = () => {
-//   const { id } = useParams();
-//   const { posts, dispatch } = usePostsContext();
-//   const { user } = useAuthContext();
-//   console.log(id);
-//   useEffect(() => {
-//     const fetchPost = async () => {
-//       const response = await fetch(`/api/posts/${id.substring(1)}`, {
-//         headers: { Authorization: `Bearer ${user.token}` },
-//       });
-//       const json = await response.json();
-
-//       if (response.ok) {
-//         dispatch({ type: "SET_POST", payload: json });
-//       }
-//     };
-
-//     if (user) {
-//       fetchPost();
-//     }
-//   }, [dispatch, id, user]);
-
-//   return (
-//     <div className="Post">
-//       <div className="posts">
-//         <PostDetails post={posts[0]} />
-//       </div>
-//     </div>
-//   );
-// };
 
 const Post = () => {
   const { id } = useParams();
@@ -63,9 +33,13 @@ const Post = () => {
   const post = posts.find((post) => post._id === id.substring(1));
 
   return (
-    <div className="Post">
-      <div className="posts">{post && <PostDetails post={post} />}</div>
-    </div>
+    <Card>
+      <Container>
+      {/* <div className="Post"> */}
+      {post && <PostDetails post={post} />}
+      {/* </div> */}
+      </Container>
+    </Card>
   );
 };
 
